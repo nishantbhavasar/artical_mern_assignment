@@ -1,9 +1,15 @@
 import React from 'react';
+import AuthPage from './pages/AuthPage';
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom"
+import HomePage from './pages/HomePage';
 function App() {
   return (
-    <div className="App">
-      <h1>Hello world</h1>
-    </div>
+      <Router>
+        <Routes>
+          <Route path="/auth" Component={AuthPage} />
+          <Route path="/" Component={HomePage} />
+        </Routes>
+      </Router>
   );
 }
 
