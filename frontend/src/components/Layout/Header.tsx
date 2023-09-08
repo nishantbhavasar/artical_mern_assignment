@@ -10,8 +10,9 @@ import { Input } from '@mui/material';
 import {SearchOutlined,Cancel} from '@mui/icons-material/'
 
 function Header(props:any) {
-    const {showSearch, handleLogout} = props;
+    const {handleLogout} = props;
     const navigate = useNavigate()
+    const showSearch =false;//from props to show
     const [search,setSearch] = React.useState('');
 
     const logoutUser = () => {
