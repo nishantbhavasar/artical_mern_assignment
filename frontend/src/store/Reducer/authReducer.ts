@@ -1,4 +1,4 @@
-import { LOGIN_API, REGISTER_API } from "../ActionTypes/atuhActionType"
+import { LOGIN_API, LOGOUT } from "../ActionTypes/atuhActionType"
 
 const initialState = {
     isLogin:false,
@@ -10,17 +10,13 @@ const initialState = {
 export default function authReducer(state=initialState,action:{type:string,payload:any}){
     switch(action.type){
         case LOGIN_API :
-            console.log(action.payload,action.type);
             return {
                 ...state,
-                isLogin:action.payload
+                isLogin:true,
+                data:action.payload
             }
-        case REGISTER_API :
-            console.log(action.payload,action.type)
-            return {
-                ...state,
-                isLogin:action.payload
-            }
+        case LOGOUT :
+            return initialState
         default :
         return state
     }

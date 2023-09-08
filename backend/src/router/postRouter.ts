@@ -5,7 +5,7 @@ import { verifyJwtToken } from "../middleware/authMiddleware";
 const postRouter = Router();
 const postController = new PostController();
 postRouter.post('/createpost',verifyJwtToken, async (req: Request, res: Response) => {
-    // console.log(req.url);
+    console.log(req.body);
     const response = await postController.createPost(req.body,req.headers.authorization as string);
     return res.status(response.status).send(response);
 });
@@ -32,6 +32,12 @@ postRouter.get('/',verifyJwtToken, async (req: Request, res: Response) => {
 postRouter.get('/post/:id',verifyJwtToken, async (req: Request, res: Response) => {
     // console.log(req.url);
     const response = await postController.getPost(req?.params?.id);
+    return res.status(response.status).send(response);
+
+});
+postRouter.get('/myposts/:id',verifyJwtToken, async (req: Request, res: Response) => {
+    // console.log(req.url);
+    const response = await postController.getUserPosts(req?.params?.id);
     return res.status(response.status).send(response);
 
 });

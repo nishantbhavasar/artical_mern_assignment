@@ -9,13 +9,16 @@ import { useNavigate } from 'react-router-dom';
 import { Input } from '@mui/material';
 import {SearchOutlined,Cancel} from '@mui/icons-material/'
 
-function Header({showSearch}:any) {
-    const navigator = useNavigate()
+function Header(props:any) {
+    const {showSearch, handleLogout} = props;
+    const navigate = useNavigate()
     const [search,setSearch] = React.useState('');
 
-    const handleCloseNavMenu = () => {
-        navigator('/auth')
-    };
+    const logoutUser = () => {
+        document.cookie = 'token='
+        handleLogout();
+        navigate('/auth')
+    }
 
     return (
         <AppBar position="static">
@@ -25,26 +28,33 @@ function Header({showSearch}:any) {
                         variant="h6"
                         noWrap
                         component="a"
-                        href="/"
+                        onClick={()=>navigate('/')}
                         sx={{
                             mr: 2,
-                            display: { xs: 'none', md: 'flex' },
+                            display: { md: 'flex' },
                             fontFamily: 'monospace',
                             fontWeight: 700,
                             letterSpacing: '.3rem',
                             color: 'inherit',
                             textDecoration: 'none',
+                            cursor:'pointer'
                         }}
                     >
                         LOGO
                     </Typography>
 
-                    <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
+                    <Box sx={{ flexGrow: 1, display: { md: 'flex' } }}>
                         <Button
-                            onClick={()=>{navigator('/myposts')}}
+                            onClick={()=>{navigate('/myposts')}}
                             sx={{ my: 2, color: 'white', display: 'block' }}
                         >
                             My Posts
+                        </Button>
+                        <Button
+                            onClick={()=>{navigate('/createPost')}}
+                            sx={{ my: 2, color: 'white', display: 'block' }}
+                        >
+                            Create Post
                         </Button>
                     </Box>
 
@@ -56,7 +66,7 @@ function Header({showSearch}:any) {
                     </Box>}
                     
                     <Button
-                        onClick={handleCloseNavMenu}
+                        onClick={logoutUser}
                         sx={{ my: 2, color: 'white', display: 'block' }}
                     >
                         Logout

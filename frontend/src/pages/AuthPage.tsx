@@ -1,5 +1,5 @@
 import Auth from '../components/Auth/Auth';
-import { triggerLogin, triggerRegister } from '../store/Actions/authAction';
+import { triggerLogin, triggerLogout } from '../store/Actions/authAction';
 import { connect } from 'react-redux';
 
 const mapStateToProps = (state:any) => ({
@@ -8,7 +8,7 @@ const mapStateToProps = (state:any) => ({
 })
 const mapDispatchToProps=(dispatch:any)=>({
   loginhandler:(payload:any)=>dispatch(triggerLogin(payload)),
-  registerHandler:(payload:any)=>dispatch(triggerRegister(payload))
+  handleLogout:(payload:any)=>dispatch(triggerLogout())
 })
 
 export default connect(mapStateToProps,mapDispatchToProps)(Auth);

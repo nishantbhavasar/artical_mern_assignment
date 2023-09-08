@@ -1,30 +1,65 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Button, Container, TextField } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-
+import jwt_decode from 'jwt-decode'
+import { LOGIN_ROUTE, REGISTER_ROUTE } from '../../constants/apiEndpoints';
 
 
 function Auth(props:any) {
-  console.log('authprops==>',props);
   let initialState = { email: '', password: '' }
   const navigate = useNavigate();
   const [userInfo, setUserInfo] = useState(initialState);
   const [login, setLogin] = useState(false);
   const [errorMessage, setErrorMessage] = useState({status:false,message:''});
-  if(props.isLogin){navigate('/')}
 
-  const handleSubmit = () => {
+  useEffect(()=>{
+    let token = document.cookie.split('=')[1]
+    if(token){
+      let tokenData = jwt_decode(token)
+      props.loginhandler(tokenData);
+    }
+    if(props.isLogin){
+      navigate('/')
+    }
+  },[props.isLogin])
+
+  const handleSubmit = async () => {
     setErrorMessage({status:false,message:""})
     if (!userInfo.email?.trim?.() || !userInfo?.password?.trim?.()) {
-      console.log("invalid data");
       setErrorMessage({status:true,message:"please fill required fields"})
     } else {
+      const EmailRegex =
+      /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+      if(!EmailRegex.test(userInfo.email)){setErrorMessage({status:true,message:"Email is not valid"});return;}
+      var raw = JSON.stringify({email_id:userInfo.email,password:userInfo.password});
+      var myHeaders = new Headers();
+      myHeaders.append("Content-Type", "application/json");
+      var requestOptions:any = {
+        method: 'POST',
+        headers: myHeaders,
+        body: raw,
+        redirect: 'follow'
+      };
       if (login) {
-        props.loginhandler(userInfo);
-        setUserInfo(initialState)
+        const response = await fetch(LOGIN_ROUTE, requestOptions);
+        const responseData = await response.json();
+        if(responseData.success){
+          const decodedData:any = jwt_decode(responseData.token);
+          document.cookie = `token=${responseData.token}`
+          props.loginhandler(decodedData);
+          setUserInfo(initialState);
+        }else{
+          setErrorMessage({status:true,message:responseData.message});
+        }
       } else {
-        props.registerHandler(userInfo);
-        setUserInfo(initialState)
+        const response = await fetch(REGISTER_ROUTE, requestOptions);
+        const responseData = await response.json();
+        if(responseData.success){
+          setUserInfo(initialState);
+          setLogin(true);
+        }else{
+          setErrorMessage({status:true,message:responseData.message});
+        }
       }
     }
   }

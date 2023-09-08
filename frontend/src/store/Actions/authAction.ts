@@ -1,4 +1,4 @@
-import { LOGIN_API, REGISTER_API } from "../ActionTypes/atuhActionType"
+import { LOGIN_API,LOGOUT } from "../ActionTypes/atuhActionType"
 
 export const triggerLogin = (payload:any) => {
     return {
@@ -6,9 +6,8 @@ export const triggerLogin = (payload:any) => {
         payload:payload,
     }
 }
-export const triggerRegister = (payload:any) => {
+export const triggerLogout = () => {
     return {
-        type:REGISTER_API,
-        payload:payload,
+        type:LOGOUT,
     }
 }

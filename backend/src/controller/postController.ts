@@ -73,7 +73,7 @@ export class PostController {
         }
       }
       const {id}:any = jwt_decode(token);
-      if(post.userID !== id){
+      if(post.userID?.toString() !== id){
         console.log("User not allow to updated other user details")
         return {
           status: 403,
@@ -102,7 +102,7 @@ export class PostController {
   async getArticalWithFilter(query:string): Promise<any> {
     console.log('getArticalWithFilter entry');
     try {
-      let post = await PostModel.find({$or:[{title:new RegExp(query)},{description:new RegExp(query)}]},{title:true,category:true,description:true}).exec();
+      let post = await PostModel.find({$or:[{title:new RegExp(query)},{description:new RegExp(query)}]}).sort({_id:-1}).exec();
       console.log('getArticalWithFilter exit');
       return {
         status: 200,
@@ -125,7 +125,7 @@ export class PostController {
     console.log('getAllArtical entry');
     try {
       if(!id) return {status:400,success:false,message:"Post Id required"}
-      let post = await PostModel.findOne({_id:id},{title:true,category:true,description:true}).exec();
+      let post = await PostModel.findOne({_id:id}).exec();
       console.log('getAllArtical exit');
       if(!post) return {status:400,success:false,message:"Post Not Found With Provided Post ID"}
       return {
@@ -148,7 +148,7 @@ export class PostController {
   async getAllArtical(): Promise<any> {
     console.log('getAllArtical entry');
     try {
-      let post = await PostModel.find({},{title:true,category:true,description:true}).exec();
+      let post = await PostModel.find({}).sort({_id:-1}).exec();
       console.log('getAllArtical exit');
       return {
         status: 200,
@@ -165,7 +165,29 @@ export class PostController {
     }
   }
   /**
- * @summary get All Artical
+ * @summary get users Artical
+ */
+  async getUserPosts(id:string): Promise<any> {
+    console.log('getUserPosts entry');
+    try {
+      let post = await PostModel.find({userID:id}).sort({_id:-1}).exec();
+      console.log('getUserPosts exit');
+      return {
+        status: 200,
+        success: true,
+        data:post
+      }
+    } catch (error: any) {
+      console.log(error?.message);
+      return {
+        status: error?.status || 500,
+        message: error?.message || "Internal Server Error",
+        success: false
+      }
+    }
+  }
+  /**
+ * @summary Update Artical
  */
   async updatePost(body:any,postId:string,token:string): Promise<any> {
     console.log('updatePost entry');
@@ -180,7 +202,7 @@ export class PostController {
         }
       }
       const {id}:any = jwt_decode(token);
-      if(post.userID !== id){
+      if(post.userID?.toString() !== id){
         console.log("User not allow to updated other user details")
         return {
           status: 403,
@@ -210,5 +232,4 @@ export class PostController {
       }
     }
   }
-
 }
