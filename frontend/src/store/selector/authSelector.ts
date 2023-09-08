@@ -1,1 +1,0 @@
-export const getIsLogin = (state:any) => state.root.authReducer
